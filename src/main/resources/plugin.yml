@@ -1,0 +1,15 @@
+name: CorePVP
+version: 1.0
+main: com.hagg.corepvp.CorePVP
+api-version: 1.19
+author: YourName
+description: A custom PVP plugin.
+commands:
+  cp:
+    description: CorePVP main command.
+    usage: /<command> [subcommand]
+    aliases: [corepvp]
+permissions:
+  corepvp.admin:
+    description: Grants access to all CorePVP admin commands.
+    default: op

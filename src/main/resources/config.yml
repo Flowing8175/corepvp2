@@ -1,0 +1,5 @@
+border-size: 2000
+grace-period-minutes: 15
+reveal-player-count: 5
+reveal-delay-minutes: 3
+core-health: 2000
