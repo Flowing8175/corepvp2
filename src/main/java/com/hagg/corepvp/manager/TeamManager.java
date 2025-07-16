@@ -54,14 +54,18 @@ public class TeamManager {
             if (player.getGameMode() == org.bukkit.GameMode.SPECTATOR) continue;
             if (i < teamSize) {
                 setPlayerTeam(player, Team.BLUE);
-                player.setDisplayName("§9[B] " + player.getName());
-                player.setPlayerListName("§9[B] " + player.getName());
+                updatePlayerName(player, Team.BLUE);
             } else {
                 setPlayerTeam(player, Team.RED);
-                player.setDisplayName("§c[R] " + player.getName());
-                player.setPlayerListName("§c[R] " + player.getName());
+                updatePlayerName(player, Team.RED);
             }
         }
+    }
+
+    public void updatePlayerName(Player player, Team team) {
+        String prefix = team == Team.BLUE ? "§9[B] " : "§c[R] ";
+        player.setDisplayName(prefix + player.getName());
+        player.setPlayerListName(prefix + player.getName());
     }
 
     public enum Team {

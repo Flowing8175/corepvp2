@@ -3,6 +3,8 @@ package com.hagg.corepvp.util;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.NamespacedKey;
 
 public class ItemFactory {
 
@@ -10,8 +12,7 @@ public class ItemFactory {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§l회복의 별");
-        meta.addEnchant(org.bukkit.enchantments.Enchantment.LURE, 1, true);
-        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+        meta.getPersistentDataContainer().set(new NamespacedKey("corepvp", "enchantment_glint_override"), PersistentDataType.BYTE, (byte) 1);
         item.setItemMeta(meta);
         return item;
     }
@@ -20,8 +21,7 @@ public class ItemFactory {
         ItemStack item = new ItemStack(Material.BEACON);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§l생명의 신호기");
-        meta.addEnchant(org.bukkit.enchantments.Enchantment.LURE, 1, true);
-        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+        meta.getPersistentDataContainer().set(new NamespacedKey("corepvp", "enchantment_glint_override"), PersistentDataType.BYTE, (byte) 1);
         item.setItemMeta(meta);
         return item;
     }

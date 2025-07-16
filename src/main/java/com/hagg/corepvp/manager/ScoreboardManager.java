@@ -2,7 +2,6 @@ package com.hagg.corepvp.manager;
 
 import com.hagg.corepvp.CorePVP;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
@@ -22,9 +21,9 @@ public class ScoreboardManager {
         objective.getScore("§7by. 해그").setScore(15);
         objective.getScore("§m----------").setScore(14);
         objective.getScore("§9블루팀").setScore(13);
-        objective.getScore("§9코어 체력: §f" + plugin.getCoreManager().getCoreHealth(TeamManager.Team.BLUE)).setScore(12);
+        objective.getScore(getCoreHealthScore(TeamManager.Team.BLUE, false)).setScore(12);
         objective.getScore("§c레드팀").setScore(11);
-        objective.getScore("§c코어 체력: §f" + plugin.getCoreManager().getCoreHealth(TeamManager.Team.RED)).setScore(10);
+        objective.getScore(getCoreHealthScore(TeamManager.Team.RED, false)).setScore(10);
         objective.getScore("인원: §9" + getTeamCount(TeamManager.Team.BLUE) + " §f: §c" + getTeamCount(TeamManager.Team.RED)).setScore(9);
         objective.getScore("§m-----------").setScore(8);
 
@@ -41,9 +40,15 @@ public class ScoreboardManager {
         return (int) plugin.getTeamManager().getPlayerTeams().values().stream().filter(t -> t == team).count();
     }
 
+    private String getCoreHealthScore(TeamManager.Team team, boolean flashing) {
+        String teamColor = team == TeamManager.Team.BLUE ? "§9" : "§c";
+        String healthColor = flashing ? "§e" : "§f";
+        return teamColor + "코어 체력: " + healthColor + plugin.getCoreManager().getCoreHealth(team);
+    }
+
     public void flashCoreHealth(TeamManager.Team team) {
         new org.bukkit.scheduler.BukkitRunnable() {
-            boolean yellow = false;
+            boolean yellow = true;
             int count = 0;
             @Override
             public void run() {
@@ -56,24 +61,13 @@ public class ScoreboardManager {
                     Scoreboard scoreboard = player.getScoreboard();
                     Objective objective = scoreboard.getObjective("corepvp");
                     if (objective != null) {
-                        String teamColor = team == TeamManager.Team.BLUE ? "§9" : "§c";
-                        String scoreString = teamColor + "코어 체력: " + (yellow ? "§e" : "§f") + plugin.getCoreManager().getCoreHealth(team);
-
-                        String oldBlueScore = "§9코어 체력: §f" + plugin.getCoreManager().getCoreHealth(TeamManager.Team.BLUE);
-                        String oldRedScore = "§c코어 체력: §f" + plugin.getCoreManager().getCoreHealth(TeamManager.Team.RED);
-
-                        if(team == TeamManager.Team.BLUE){
-                            scoreboard.resetScores(oldBlueScore);
-                            objective.getScore(scoreString).setScore(12);
-                        }else{
-                            scoreboard.resetScores(oldRedScore);
-                            objective.getScore(scoreString).setScore(10);
-                        }
+                        scoreboard.resetScores(getCoreHealthScore(team, !yellow));
+                        objective.getScore(getCoreHealthScore(team, yellow)).setScore(team == TeamManager.Team.BLUE ? 12 : 10);
                     }
                 }
                 yellow = !yellow;
                 count++;
             }
-        }.runTaskTimer(plugin, 0, 5);
+        }.runTaskTimer(plugin, 0, 5); // 0.25 seconds
     }
 }

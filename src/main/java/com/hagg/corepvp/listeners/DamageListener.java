@@ -37,10 +37,12 @@ public class DamageListener implements Listener {
                     double damage = event.getDamage();
                     if (plugin.getTeamManager().isTeamWiped(coreTeam)) {
                         damage *= 0.75;
-                        damager.sendActionBar("§l" + coreTeam.name() + "팀§f이 전멸하여 데미지의 25%가 상쇄되었습니다!");
-                        damager.playSound(damager.getLocation(), "enchant.thorns.hit", 1, 1);
+                        String teamColor = coreTeam == TeamManager.Team.BLUE ? "§9" : "§c";
+                        damager.sendActionBar("§l" + teamColor + coreTeam.name() + "팀§f이 전멸하여 데미지의 25%가 상쇄되었습니다!");
+                        damager.playSound(damager.getLocation(), org.bukkit.Sound.ENCHANT_THORNS_HIT, 1, 1);
                     }
                     plugin.getCoreManager().damageCore(coreTeam, damage);
+                    plugin.getScoreboardManager().flashCoreHealth(coreTeam);
                     plugin.getStatsManager().addCoreDamage(damager, (int) damage);
                     event.setCancelled(true);
                 }

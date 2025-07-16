@@ -1,6 +1,7 @@
 package com.hagg.corepvp.commands;
 
 import com.hagg.corepvp.CorePVP;
+import com.hagg.corepvp.manager.GameManager;
 import org.bukkit.command.CommandSender;
 
 public class GraceCommand implements SubCommand {
@@ -15,6 +16,11 @@ public class GraceCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
         if (!sender.hasPermission("corepvp.admin")) {
             sender.sendMessage("You don't have permission to do that.");
+            return;
+        }
+
+        if (plugin.getGameManager().getGameState() == GameManager.GameState.WAITING || plugin.getGameManager().getGameState() == GameManager.GameState.FINISHED) {
+            sender.sendMessage("The game is not running.");
             return;
         }
 

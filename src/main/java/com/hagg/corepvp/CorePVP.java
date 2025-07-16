@@ -35,19 +35,19 @@ public final class CorePVP extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new DamageListener(this), this);
         getServer().getPluginManager().registerEvents(new InteractionListener(this), this);
+        getServer().getPluginManager().registerEvents(new com.hagg.corepvp.listeners.TabCompleteListener(this), this);
 
         getCommand("cp").setExecutor(new CommandManager(this));
 
         // Recipes
         org.bukkit.inventory.ShapedRecipe starRecipe = new org.bukkit.inventory.ShapedRecipe(new org.bukkit.NamespacedKey(this, "star_of_recovery"), com.hagg.corepvp.util.ItemFactory.createStarOfRecovery());
-        starRecipe.shape("III", "INI", "III");
+        starRecipe.shape("III", "IGI", "III");
         starRecipe.setIngredient('I', org.bukkit.Material.IRON_INGOT);
-        starRecipe.setIngredient('N', org.bukkit.Material.NETHER_STAR);
+        starRecipe.setIngredient('G', org.bukkit.Material.GOLDEN_APPLE);
         getServer().addRecipe(starRecipe);
 
-        org.bukkit.inventory.ShapedRecipe beaconRecipe = new org.bukkit.inventory.ShapedRecipe(new org.bukkit.NamespacedKey(this, "beacon_of_life"), com.hagg.corepvp.util.ItemFactory.createBeaconOfLife());
-        beaconRecipe.shape("O", "O", "O");
-        beaconRecipe.setIngredient('O', org.bukkit.Material.OBSIDIAN);
+        org.bukkit.inventory.ShapelessRecipe beaconRecipe = new org.bukkit.inventory.ShapelessRecipe(new org.bukkit.NamespacedKey(this, "beacon_of_life"), com.hagg.corepvp.util.ItemFactory.createBeaconOfLife());
+        beaconRecipe.addIngredient(3, org.bukkit.Material.OBSIDIAN);
         getServer().addRecipe(beaconRecipe);
     }
 

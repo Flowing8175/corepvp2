@@ -42,8 +42,9 @@ public class GameManager {
                 }
 
                 if (gracePeriodTime % 60 == 0 && gracePeriodTime / 60 > 0) {
-                    if (gracePeriodTime / 60 == 15 || gracePeriodTime / 60 == 10 || gracePeriodTime / 60 == 5 || gracePeriodTime / 60 == 1) {
-                        plugin.getServer().broadcastMessage("§b§l무적 시간 §e§l종료까지 §b§l" + (gracePeriodTime / 60) + "분 §e§l남았습니다!");
+                    int minutes = gracePeriodTime / 60;
+                    if (minutes == 15 || minutes == 10 || minutes == 5 || minutes == 1) {
+                        plugin.getServer().broadcastMessage("§b§l무적 시간 §e§l종료까지 §b§l" + minutes + "분 §e§l남았습니다!");
                         plugin.getServer().getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), "ui.button.click", 1, 2));
                     }
                 } else if (gracePeriodTime == 30 || gracePeriodTime == 10 || (gracePeriodTime <= 3 && gracePeriodTime > 0)) {
@@ -72,17 +73,21 @@ public class GameManager {
     }
 
     public void addGraceTime(int minutes) {
-        gracePeriodTime += minutes * 60;
-        if (getGameState() != GameState.GRACE_PERIOD) {
-            startGracePeriod();
+        if (getGameState() == GameState.ACTIVE || getGameState() == GameState.GRACE_PERIOD) {
+            gracePeriodTime += minutes * 60;
+            if (getGameState() != GameState.GRACE_PERIOD) {
+                startGracePeriod();
+            }
         }
     }
 
     public void subtractGraceTime(int minutes) {
-        gracePeriodTime -= minutes * 60;
-        if (gracePeriodTime <= 0) {
-            gracePeriodTime = 0;
-            endGracePeriod();
+        if (getGameState() == GameState.GRACE_PERIOD) {
+            gracePeriodTime -= minutes * 60;
+            if (gracePeriodTime <= 0) {
+                gracePeriodTime = 0;
+                endGracePeriod();
+            }
         }
     }
 
@@ -145,7 +150,7 @@ public class GameManager {
                                 org.bukkit.Location loc = player.getLocation();
                                 plugin.getServer().broadcastMessage("§c" + player.getName() + "§f님의 위치: §l" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
                             });
-                    plugin.getServer().broadcastMessage("§f§l-----------------------");
+                    plugin.getServer().broadcastMessage("§f§l----------------");
                 }
             }
         }.runTaskTimer(plugin, 0, plugin.getConfigManager().getRevealDelayMinutes() * 60 * 20);
@@ -176,9 +181,9 @@ public class GameManager {
                                     meta.addEffect(FireworkEffect.builder()
                                             .with(FireworkEffect.Type.BALL_LARGE)
                                             .withColor(winningTeam == TeamManager.Team.BLUE ? org.bukkit.Color.BLUE : org.bukkit.Color.RED)
-                                            .withTrail()
+                                            .trail(true)
                                             .build());
-                                    meta.setPower(1);
+                                    meta.setPower(0);
                                     firework.setFireworkMeta(meta);
                                 }
                             }.runTaskLater(plugin, i * 8);
@@ -213,13 +218,17 @@ public class GameManager {
 
 
         // Teleport all players to spawn
-        plugin.getServer().getOnlinePlayers().forEach(player -> {
-            player.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
-        });
-
-        // Clean up
-        plugin.getCoreManager().despawnCores();
-        plugin.getTeamManager().clearTeams();
-        plugin.getStatsManager().clearStats();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.getServer().getOnlinePlayers().forEach(player -> {
+                    player.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
+                });
+                // Clean up
+                plugin.getCoreManager().despawnCores();
+                plugin.getTeamManager().clearTeams();
+                plugin.getStatsManager().clearStats();
+            }
+        }.runTaskLater(plugin, 100); // 5 seconds
     }
 }
