@@ -104,10 +104,12 @@ public class GameManager {
                         Player player = plugin.getServer().getPlayer(uuid);
                         if (player != null) {
                             Location coreLocation = plugin.getCoreManager().getCoreLocation(team);
-                            // a random spot within a 10-block radius of their team's Core
-                            Location teleportLocation = coreLocation.clone().add(Math.random() * 20 - 10, 0, Math.random() * 20 - 10);
-                            player.teleport(teleportLocation);
-                            player.setBedSpawnLocation(teleportLocation, true);
+                            if (coreLocation != null) {
+                                // a random spot within a 10-block radius of their team's Core
+                                Location teleportLocation = coreLocation.clone().add(Math.random() * 20 - 10, 0, Math.random() * 20 - 10);
+                                player.teleport(teleportLocation);
+                                player.setBedSpawnLocation(teleportLocation, true);
+                            }
                         }
                     });
                     startGracePeriod();

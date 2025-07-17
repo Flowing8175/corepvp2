@@ -57,11 +57,12 @@ public class CoreManager {
     }
 
     private Location getSafeCoreLocation(Location location) {
-        Location check = location.getWorld().getHighestBlockAt(location).getLocation();
-        while (!check.getBlock().getType().isSolid() || check.getBlock().getType() == org.bukkit.Material.WATER) {
-            check.subtract(0, 1, 0);
+        int y = location.getWorld().getHighestBlockYAt(location);
+        location.setY(y);
+        while (!location.getBlock().getType().isSolid() || location.getBlock().getType() == org.bukkit.Material.WATER) {
+            location.subtract(0, 1, 0);
         }
-        return check.add(0, 2, 0);
+        return location.add(0, 2, 0);
     }
 
     private void spawnCoreSlime(Location location, TeamManager.Team team) {
